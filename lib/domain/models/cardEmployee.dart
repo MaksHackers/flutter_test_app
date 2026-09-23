@@ -5,5 +5,5 @@ class CardEmployeeData {
   final String descriptionText;
   final String? imageUrl;
 
-  new({required this.text, required this.descriptionText, this.imageUrl});
+  CardEmployeeData({required this.text, required this.descriptionText, this.imageUrl});
 }
