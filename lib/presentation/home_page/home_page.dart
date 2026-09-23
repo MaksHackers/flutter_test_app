@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pmu_course/domain/models/card.dart';
+import 'package:pmu_course/presentation/details_page/details_page.dart';
 
 part 'card.dart';
 
@@ -66,18 +69,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final Color _color = Colors.orangeAccent;
 
   @override
-  void initState() {
-    WidgetsBinding.instance.addPersistentFrameCallback((_) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-            'Hello',
-            style: ,
-          )
-      ))
-    })
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -95,27 +86,27 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final employees = [
-      _CardEmployeeData(
+      CardEmployeeData(
         text: 'Петр Петров',
         descriptionText: 'Разработчик\n90000 руб.',
         imageUrl: 'assets/images/avatar1.png',
       ),
-      _CardEmployeeData(
+      CardEmployeeData(
         text: 'Мария Бикбаева',
         descriptionText: 'Дизайнер\n90000 руб.',
         imageUrl: 'assets/images/avatar2.png',
       ),
-      _CardEmployeeData(
+      CardEmployeeData(
         text: 'Иван Иванов',
         descriptionText: 'Менеджер\n150000 руб.',
         imageUrl: 'assets/images/avatar3.png',
       ),
-      _CardEmployeeData(
+      CardEmployeeData(
         text: 'Дмитрий Смирнов',
         descriptionText: 'Директор\n250000 руб.',
         imageUrl: 'assets/images/avatar4.png',
       ),
-      _CardEmployeeData(
+      CardEmployeeData(
         text: 'Анна Морозова',
         descriptionText: 'Разработчик\n110000 руб.',
         imageUrl: 'assets/images/avatar5.png',
@@ -126,9 +117,35 @@ class Body extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: employees.map((emp) => _Card.fromData(emp)).toList(),
+          children: employees.map((emp) =>
+              _Card.fromData(
+                emp,
+                (title, isLiked) => _showSnackBar(context, title, isLiked),
+                () => _navToDetails(context, emp)
+          )).toList(),
         ),
       ),
     );
-  }
+}
+
+void _navToDetails(BuildContext context, CardEmployeeData data) {
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => DetailsPage(data)));
+}
+
+void _showSnackBar(BuildContext context, String title, bool isLiked) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final colorScheme = Theme.of(context).colorScheme;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        'Теперь $title у вас в ${isLiked ? 'любимых' : 'не любимых'}!',
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          color: colorScheme.primary,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      backgroundColor: colorScheme.primaryContainer,
+      duration: const Duration(seconds: 2),
+    ));
+  });
+}
 }
