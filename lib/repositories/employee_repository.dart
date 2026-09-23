@@ -6,7 +6,7 @@ import 'package:pmu_course/repositories/api_interface.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class EmployeeRepository extends ApiInterface {
-  static final Dio _dio = Dio()
+  static final Dio _dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 3)))
       ..interceptors.add(PrettyDioLogger(
         requestHeader: true,
         requestBody: true,

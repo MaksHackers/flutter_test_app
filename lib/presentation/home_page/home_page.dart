@@ -135,26 +135,26 @@ class Body extends StatelessWidget {
           ),
         ),
       );
-}
+  }
 
-void _navToDetails(BuildContext context, CardEmployeeData data) {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => DetailsPage(data)));
-}
+  void _navToDetails(BuildContext context, CardEmployeeData data) {
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => DetailsPage(data)));
+  }
 
-void _showSnackBar(BuildContext context, String title, bool isLiked) {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    final colorScheme = Theme.of(context).colorScheme;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(
-        'Теперь $title у вас в ${isLiked ? 'любимых' : 'не любимых'}!',
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: colorScheme.primary,
-          fontWeight: FontWeight.bold,
+  void _showSnackBar(BuildContext context, String title, bool isLiked) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final colorScheme = Theme.of(context).colorScheme;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          'Теперь $title у вас в ${isLiked ? 'любимых' : 'не любимых'}!',
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: colorScheme.primary,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      backgroundColor: colorScheme.primaryContainer,
-      duration: const Duration(seconds: 2),
-    ));
-  });
-}
+        backgroundColor: colorScheme.primaryContainer,
+        duration: const Duration(seconds: 2),
+      ));
+    });
+  }
 }
