@@ -28,7 +28,7 @@ CharacterAttributesDataDto _$CharacterAttributesDataDtoFromJson(
   Map<String, dynamic> json,
 ) => CharacterAttributesDataDto(
   name: json['name'] as String?,
-  position: json['born'] as String?,
-  salary: json['died'] as String?,
+  position: json['position'] as String?,
+  salary: json['salary'] as String?,
   image: json['image'] as String?,
 );

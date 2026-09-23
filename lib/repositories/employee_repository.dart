@@ -12,12 +12,12 @@ class EmployeeRepository extends ApiInterface {
         requestBody: true,
       ));
 
-  static const String _baseUrl = '';
+  static const String _baseUrl = 'http://10.8.1.17:8080';
 
   @override
   Future<List<CardEmployeeData>?> loadData({String? query}) async {
     try {
-      const String url = '$_baseUrl/v1/characters';
+      const String url = '$_baseUrl/api/characters';
 
       final Response<dynamic> response = await _dio.get<Map<dynamic, dynamic>>(url, queryParameters: {
         if (query != null && query.isNotEmpty) 'q': query,

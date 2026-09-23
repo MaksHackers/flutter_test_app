@@ -54,16 +54,28 @@ class _CardState extends State<_Card> {
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(15),
-                      topLeft: Radius.circular(15)
+                    bottomLeft: Radius.circular(15),
+                    topLeft: Radius.circular(15),
                   ),
                   child: SizedBox(
                     height: 150,
                     width: 150,
-                    child: Image.asset(
-                      widget.imageUrl ?? '',
+                    child: (widget.imageUrl == null || widget.imageUrl!.isEmpty)
+                        ? const Placeholder()
+                        : Image.network(
+                      widget.imageUrl!,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => const Placeholder(),
+                      loadingBuilder: (context, child, progress) {
+                        if (progress == null) return child;
+                        return const Center(
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),

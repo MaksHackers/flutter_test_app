@@ -87,7 +87,7 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final repo = MockRepository();
+    final repo = EmployeeRepository();
     final searchController = TextEditingController();
     var data = repo.loadData();
 
