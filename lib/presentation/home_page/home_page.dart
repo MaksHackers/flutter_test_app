@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pmu_course/domain/models/card.dart';
+import 'package:pmu_course/domain/models/cardEmployee.dart';
 import 'package:pmu_course/presentation/details_page/details_page.dart';
 
 part 'card.dart';
