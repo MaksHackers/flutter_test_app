@@ -25,11 +25,11 @@ class CharacterDataDto {
 @JsonSerializable(createToJson: false)
 class CharacterAttributesDataDto {
   final String? name;
-  final String? born;
-  final String? died;
+  final String? position;
+  final String? salary;
   final String? image;
 
-  const CharacterAttributesDataDto({this.name, this.born, this.died, this.image});
+  const CharacterAttributesDataDto({this.name, this.position, this.salary, this.image});
 
   factory CharacterAttributesDataDto.fromJson(Map<String, dynamic> json) =>
       _$CharacterAttributesDataDtoFromJson(json);

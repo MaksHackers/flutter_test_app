@@ -87,47 +87,52 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final employees = EmployeeRepository().loadData();
+    final repo = MockRepository();
+    final searchController = TextEditingController();
+    var data = repo.loadData();
 
     return
       Padding(
-        padding: const EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: CupertinoSearchTextField(
-                controller: searchController,
-                onChanged: (search) {
-                  setState(() {
-                    data = repo.loadData(q: search);
-                  });
-                },
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        child:
+        StatefulBuilder(
+          builder: (context, setState) => Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: CupertinoSearchTextField(
+                  controller: searchController,
+                  onChanged: (search) {
+                    setState(() {
+                      data = repo.loadData(query: search);
+                    });
+                  },
+                ),
               ),
-            ),
-            Expanded(
-              child: Center(
-                child: FutureBuilder<List<CardEmployeeData>?>(
-                  future: employees,
-                  builder: (context, snapshot) => SingleChildScrollView(
-                    child: snapshot.hasData
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: snapshot.data?.map((emp) {
-                            return _Card.fromData(
-                              emp,
-                              (title, isLiked) => _showSnackBar(context, title, isLiked),
-                              () => _navToDetails(context, emp),);
-                            }
-                        ).toList() ??
-                        [],
-                      )
-                    : const CircularProgressIndicator()
+              Expanded(
+                child: Center(
+                  child: FutureBuilder<List<CardEmployeeData>?>(
+                    future: data,
+                    builder: (context, snapshot) => SingleChildScrollView(
+                      child: snapshot.hasData
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: snapshot.data?.map((emp) {
+                              return _Card.fromData(
+                                emp,
+                                (title, isLiked) => _showSnackBar(context, title, isLiked),
+                                () => _navToDetails(context, emp),);
+                              }
+                          ).toList() ??
+                          [],
+                        )
+                      : const CircularProgressIndicator()
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 }

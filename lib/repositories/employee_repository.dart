@@ -15,18 +15,24 @@ class EmployeeRepository extends ApiInterface {
   static const String _baseUrl = '';
 
   @override
-  Future<List<CardEmployeeData>?> loadData() async {
+  Future<List<CardEmployeeData>?> loadData({String? query}) async {
     try {
       const String url = '$_baseUrl/v1/characters';
 
-      final Response<dynamic> response = await _dio.get<Map<dynamic, dynamic>>(url);
+      final Response<dynamic> response = await _dio.get<Map<dynamic, dynamic>>(url, queryParameters: {
+        if (query != null && query.isNotEmpty) 'q': query,
+      });
 
       final CharactersDto dto = CharactersDto.fromJson(response.data as Map<String, dynamic>);
       final List<CardEmployeeData>? data = dto.data?.map((e) => e.toDomain()).toList();
 
       return data;
     } on DioException catch (e) {
-
+      print('DioException: ${e.type} | ${e.message} | ${e.response?.statusCode}');
+      return null;
+    } catch (e) {
+      print('Unexpected error: $e');
+      return null;
     }
   }
 }

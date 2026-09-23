@@ -5,6 +5,6 @@ extension CharacterDataDtoToModel on CharacterDataDto {
   CardEmployeeData toDomain() => CardEmployeeData(
       text: attributes?.name ?? 'UNKNOWN',
       imageUrl: attributes?.image,
-      descriptionText: '${attributes?.born} - ${attributes?.died}',
+      descriptionText: '${attributes?.position} \n Зарплата: ${attributes?.salary}',
   );
 }

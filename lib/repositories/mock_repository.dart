@@ -3,8 +3,8 @@ import 'package:pmu_course/repositories/api_interface.dart';
 
 class MockRepository extends ApiInterface{
   @override
-  Future<List<CardEmployeeData>?> loadData() async {
-    return [
+  Future<List<CardEmployeeData>?> loadData({String? query}) async {
+    final employees = [
       CardEmployeeData(
         text: 'Петр Петров',
         descriptionText: 'Разработчик\n90000 руб.',
@@ -31,5 +31,13 @@ class MockRepository extends ApiInterface{
         imageUrl: 'assets/images/avatar5.png',
       ),
     ];
+
+    final q = query?.trim().toLowerCase() ?? '';
+    if (q.isEmpty) return employees;
+
+    return employees.where((e) =>
+      e.text.toLowerCase().contains(q) ||
+      e.descriptionText.toLowerCase().contains(q),
+    ).toList();
   }
 }
