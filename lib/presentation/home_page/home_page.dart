@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pmu_course/domain/models/cardEmployee.dart';
 import 'package:pmu_course/presentation/details_page/details_page.dart';
+import 'package:pmu_course/repositories/employee_repository.dart';
+import 'package:pmu_course/repositories/mock_repository.dart';
 
 part 'card.dart';
 
@@ -85,47 +87,49 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final employees = [
-      CardEmployeeData(
-        text: 'Петр Петров',
-        descriptionText: 'Разработчик\n90000 руб.',
-        imageUrl: 'assets/images/avatar1.png',
-      ),
-      CardEmployeeData(
-        text: 'Мария Бикбаева',
-        descriptionText: 'Дизайнер\n90000 руб.',
-        imageUrl: 'assets/images/avatar2.png',
-      ),
-      CardEmployeeData(
-        text: 'Иван Иванов',
-        descriptionText: 'Менеджер\n150000 руб.',
-        imageUrl: 'assets/images/avatar3.png',
-      ),
-      CardEmployeeData(
-        text: 'Дмитрий Смирнов',
-        descriptionText: 'Директор\n250000 руб.',
-        imageUrl: 'assets/images/avatar4.png',
-      ),
-      CardEmployeeData(
-        text: 'Анна Морозова',
-        descriptionText: 'Разработчик\n110000 руб.',
-        imageUrl: 'assets/images/avatar5.png',
-      ),
-    ];
+    final employees = EmployeeRepository().loadData();
 
-    return Center(
-      child: SingleChildScrollView(
+    return
+      Padding(
+        padding: const EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: employees.map((emp) =>
-              _Card.fromData(
-                emp,
-                (title, isLiked) => _showSnackBar(context, title, isLiked),
-                () => _navToDetails(context, emp)
-          )).toList(),
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: CupertinoSearchTextField(
+                controller: searchController,
+                onChanged: (search) {
+                  setState(() {
+                    data = repo.loadData(q: search);
+                  });
+                },
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: FutureBuilder<List<CardEmployeeData>?>(
+                  future: employees,
+                  builder: (context, snapshot) => SingleChildScrollView(
+                    child: snapshot.hasData
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: snapshot.data?.map((emp) {
+                            return _Card.fromData(
+                              emp,
+                              (title, isLiked) => _showSnackBar(context, title, isLiked),
+                              () => _navToDetails(context, emp),);
+                            }
+                        ).toList() ??
+                        [],
+                      )
+                    : const CircularProgressIndicator()
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ),
-    );
+      );
 }
 
 void _navToDetails(BuildContext context, CardEmployeeData data) {
