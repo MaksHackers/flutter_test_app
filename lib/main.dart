@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pmu_course/presentation/home_page/bloc/bloc.dart';
 import 'package:pmu_course/presentation/home_page/home_page.dart';
+import 'package:pmu_course/repositories/employee_repository.dart';
 
 void main() async {
   final employees = [
@@ -49,7 +52,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: RepositoryProvider<EmployeeRepository>(
+        lazy: true,
+        create: (_) => EmployeeRepository(),
+        child: BlocProvider<HomeBloc>(
+          lazy: false,
+          create: (context) => HomeBloc(context.read<EmployeeRepository>()),
+          child: const MyHomePage(title: 'Flutter Demo Home Page')
+        ),
+      ),
     );
   }
 }
