@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pmu_course/components/utils/debounce.dart';
 import 'package:pmu_course/domain/models/cardEmployee.dart';
 import 'package:pmu_course/presentation/details_page/details_page.dart';
 import 'package:pmu_course/presentation/home_page/bloc/bloc.dart';
@@ -108,6 +109,11 @@ class _BodyState extends State<_Body> {
     super.dispose();
   }
 
+  Future<void> _onRefresh() {
+    context.read<HomeBloc>().add(HomeLoadDataEvent(search: searchController.text));
+    return Future.value(null);
+  }
+
   @override
   Widget build(BuildContext context) {
     return
@@ -122,7 +128,7 @@ class _BodyState extends State<_Body> {
                 child: CupertinoSearchTextField(
                   controller: searchController,
                   onChanged: (search) {
-                    context.read<HomeBloc>().add(HomeLoadDataEvent(search: search));
+                    Debounce.run(() => context.read<HomeBloc>().add(HomeLoadDataEvent(search: search)));
                   },
                 ),
               ),
@@ -130,7 +136,9 @@ class _BodyState extends State<_Body> {
                 builder: (context, state) => state.isLoading
                   ? const CircularProgressIndicator()
                   : Expanded(
-                    child: ListView.builder(
+                    child: RefreshIndicator(
+                      onRefresh: _onRefresh,
+                      child: ListView.builder(
                         padding: EdgeInsets.zero,
                         itemCount: state.data?.length ?? 0,
                         itemBuilder: (context, index) {
@@ -143,8 +151,9 @@ class _BodyState extends State<_Body> {
                             )
                           : const SizedBox.shrink();
                         },
-                      )
+                      ),
                     )
+                  )
               )
             ],
           ),
