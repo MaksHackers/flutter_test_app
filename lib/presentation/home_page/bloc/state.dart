@@ -2,12 +2,16 @@ import 'package:equatable/equatable.dart';
 import 'package:pmu_course/domain/models/cardEmployee.dart';
 
 class HomeState extends Equatable {
-  final Future<List<CardEmployeeData>?>? data;
+  final List<CardEmployeeData>? data;
+  final bool isLoading;
 
-  const HomeState({this.data});
+  const HomeState({
+    this.data,
+    this.isLoading = false
+  });
 
-  HomeState copyWith({Future<List<CardEmployeeData>?>? data}) => HomeState(data: data ?? this.data);
+  HomeState copyWith({List<CardEmployeeData>? data, bool? isLoading}) => HomeState(data: data ?? this.data, isLoading: isLoading ?? this.isLoading);
 
   @override
-  List<Object?> get props => [data];
+  List<Object?> get props => [data, isLoading];
 }

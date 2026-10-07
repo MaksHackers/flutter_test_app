@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pmu_course/domain/models/cardEmployee.dart';
 import 'package:pmu_course/presentation/details_page/details_page.dart';
-import 'package:pmu_course/repositories/employee_repository.dart';
-import 'package:pmu_course/repositories/mock_repository.dart';
+import 'package:pmu_course/presentation/home_page/bloc/bloc.dart';
+import 'package:pmu_course/presentation/home_page/bloc/events.dart';
+import 'package:pmu_course/presentation/home_page/bloc/state.dart';
 
 part 'card.dart';
 
@@ -77,20 +79,37 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text('Дмитриев Максим Александрович - ПИбд-31', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
       ),
-      body: const Body(),
+      body: const _Body(),
     );
   }
 }
 
-class Body extends StatelessWidget {
-  const Body({super.key});
+class _Body extends StatefulWidget {
+  const _Body({super.key});
+
+  @override
+  State<_Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<_Body> {
+  final searchController = TextEditingController();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeBloc>().add(const HomeLoadDataEvent());
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final repo = EmployeeRepository();
-    final searchController = TextEditingController();
-    var data = repo.loadData();
-
     return
       Padding(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
@@ -103,34 +122,30 @@ class Body extends StatelessWidget {
                 child: CupertinoSearchTextField(
                   controller: searchController,
                   onChanged: (search) {
-                    setState(() {
-                      data = repo.loadData(query: search);
-                    });
+                    context.read<HomeBloc>().add(HomeLoadDataEvent(search: search));
                   },
                 ),
               ),
-              Expanded(
-                child: Center(
-                  child: FutureBuilder<List<CardEmployeeData>?>(
-                    future: data,
-                    builder: (context, snapshot) => SingleChildScrollView(
-                      child: snapshot.hasData
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: snapshot.data?.map((emp) {
-                              return _Card.fromData(
-                                emp,
-                                (title, isLiked) => _showSnackBar(context, title, isLiked),
-                                () => _navToDetails(context, emp),);
-                              }
-                          ).toList() ??
-                          [],
-                        )
-                      : const CircularProgressIndicator()
-                    ),
-                  ),
-                ),
-              ),
+              BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) => state.isLoading
+                  ? const CircularProgressIndicator()
+                  : Expanded(
+                    child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: state.data?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final data = state.data?[index];
+                          return data != null
+                            ? _Card.fromData(
+                              data,
+                              ((title, isLiked) => _showSnackBar(context, title, isLiked)),
+                              () => _navToDetails(context, data)
+                            )
+                          : const SizedBox.shrink();
+                        },
+                      )
+                    )
+              )
             ],
           ),
         ),
