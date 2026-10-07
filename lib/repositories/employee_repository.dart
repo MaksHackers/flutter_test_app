@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pmu_course/data/dtos/characters_dto.dart';
 import 'package:pmu_course/data/mappers/characters_mapper.dart';
-import 'package:pmu_course/domain/models/cardEmployee.dart';
+import 'package:pmu_course/domain/models/home.dart';
 import 'package:pmu_course/repositories/api_interface.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
@@ -15,20 +15,25 @@ class EmployeeRepository extends ApiInterface {
   static const String _baseUrl = 'http://10.8.1.17:8080';
 
   @override
-  Future<List<CardEmployeeData>?> loadData({String? query}) async {
+  Future<HomeData?> loadData({OnErrorCallBack? onError, String? query, int page = 1, int pageSize = 5}) async {
     try {
       const String url = '$_baseUrl/api/characters';
 
-      final Response<dynamic> response = await _dio.get<Map<dynamic, dynamic>>(url, queryParameters: {
-        if (query != null && query.isNotEmpty) 'q': query,
-      });
+      final Response<dynamic> response = await _dio.get<Map<dynamic, dynamic>>(
+        url,
+        queryParameters: {
+          'filter[name_cont]': query,
+          'page[number]': page,
+          'page[size]': pageSize
+        }
+      );
 
       final CharactersDto dto = CharactersDto.fromJson(response.data as Map<String, dynamic>);
-      final List<CardEmployeeData>? data = dto.data?.map((e) => e.toDomain()).toList();
+      final HomeData? data = dto.toDomain();
 
       return data;
     } on DioException catch (e) {
-      print('DioException: ${e.type} | ${e.message} | ${e.response?.statusCode}');
+      onError?.call(e.error?.toString());
       return null;
     } catch (e) {
       print('Unexpected error: $e');

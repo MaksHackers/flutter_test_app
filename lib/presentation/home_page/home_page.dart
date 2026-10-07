@@ -94,18 +94,35 @@ class _Body extends StatefulWidget {
 
 class _BodyState extends State<_Body> {
   final searchController = TextEditingController();
+  final scrollController = ScrollController();
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeBloc>().add(const HomeLoadDataEvent());
     });
+
+    scrollController.addListener(_onNextPageListener);
+
     super.initState();
+  }
+
+  void _onNextPageListener() {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent) {
+      final bloc = context.read<HomeBloc>();
+      if (!bloc.state.isPaginationLoading && bloc.state.data?.nextPage != null) {
+        bloc.add(HomeLoadDataEvent(
+          search: searchController.text,
+          nextPage: bloc.state.data?.nextPage
+        ));
+      }
+    }
   }
 
   @override
   void dispose() {
     searchController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -133,27 +150,33 @@ class _BodyState extends State<_Body> {
                 ),
               ),
               BlocBuilder<HomeBloc, HomeState>(
-                builder: (context, state) => state.isLoading
-                  ? const CircularProgressIndicator()
-                  : Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: _onRefresh,
-                      child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: state.data?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          final data = state.data?[index];
-                          return data != null
-                            ? _Card.fromData(
-                              data,
-                              ((title, isLiked) => _showSnackBar(context, title, isLiked)),
-                              () => _navToDetails(context, data)
-                            )
-                          : const SizedBox.shrink();
-                        },
-                      ),
+                builder: (context, state) => state.error != null
+                  ? Text(
+                      state.error ?? '',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.red),
                     )
-                  )
+                  : state.isLoading
+                    ? const CircularProgressIndicator()
+                    : Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: _onRefresh,
+                        child: ListView.builder(
+                          controller: scrollController,
+                          padding: EdgeInsets.zero,
+                          itemCount: state.data?.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final data = state.data?.data?[index];
+                            return data != null
+                              ? _Card.fromData(
+                                data,
+                                ((title, isLiked) => _showSnackBar(context, title, isLiked)),
+                                () => _navToDetails(context, data)
+                              )
+                            : const SizedBox.shrink();
+                          },
+                        ),
+                      )
+                    )
               )
             ],
           ),

@@ -1,5 +1,7 @@
-import 'package:pmu_course/domain/models/cardEmployee.dart';
+import 'package:pmu_course/domain/models/home.dart';
+
+typedef OnErrorCallBack = void Function(dynamic error);
 
 abstract class ApiInterface {
-  Future<List<CardEmployeeData>?> loadData({String? query});
+  Future<HomeData?> loadData({OnErrorCallBack? onError, String? query});
 }

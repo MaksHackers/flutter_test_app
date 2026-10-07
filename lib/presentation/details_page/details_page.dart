@@ -49,17 +49,25 @@ class DetailsPage extends StatelessWidget {
                 children: [
                   SizedBox(
                     height: 280,
-                    child: Image.asset(
-                      data.imageUrl ?? '',
+                    child: (data.imageUrl == null || data.imageUrl!.isEmpty)
+                        ? _placeholder(colorScheme)
+                        : Image.network(
+                      data.imageUrl!,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        color: colorScheme.primaryContainer,
-                        child: Icon(
-                          Icons.person,
-                          size: 120,
-                          color: colorScheme.onPrimaryContainer,
-                        ),
-                      ),
+                      errorBuilder: (_, __, ___) => _placeholder(colorScheme),
+                      loadingBuilder: (context, child, progress) {
+                        if (progress == null) return child;
+                        return Container(
+                          color: colorScheme.primaryContainer,
+                          child: const Center(
+                            child: SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: CircularProgressIndicator(strokeWidth: 3),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   Padding(
@@ -89,4 +97,13 @@ class DetailsPage extends StatelessWidget {
       ),
     );
   }
+
+  Widget _placeholder(ColorScheme colorScheme) => Container(
+    color: colorScheme.primaryContainer,
+    child: Icon(
+      Icons.person,
+      size: 120,
+      color: colorScheme.onPrimaryContainer,
+    ),
+  );
 }

@@ -1,9 +1,10 @@
 import 'package:pmu_course/domain/models/cardEmployee.dart';
+import 'package:pmu_course/domain/models/home.dart';
 import 'package:pmu_course/repositories/api_interface.dart';
 
 class MockRepository extends ApiInterface{
   @override
-  Future<List<CardEmployeeData>?> loadData({String? query}) async {
+  Future<HomeData?> loadData({OnErrorCallBack? onError, String? query}) async {
     final employees = [
       CardEmployeeData(
         text: 'Петр Петров',
@@ -33,11 +34,13 @@ class MockRepository extends ApiInterface{
     ];
 
     final q = query?.trim().toLowerCase() ?? '';
-    if (q.isEmpty) return employees;
+    if (q.isEmpty) return HomeData(data: employees);
 
-    return employees.where((e) =>
-      e.text.toLowerCase().contains(q) ||
-      e.descriptionText.toLowerCase().contains(q),
-    ).toList();
+    return HomeData(
+      data: employees.where((e) =>
+        e.text.toLowerCase().contains(q) ||
+        e.descriptionText.toLowerCase().contains(q),
+      ).toList(),
+    );
   }
 }
