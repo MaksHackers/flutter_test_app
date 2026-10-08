@@ -62,7 +62,8 @@ import 'app_locale_ru.dart';
 /// be consistent with the languages listed in the AppLocale.supportedLocales
 /// property.
 abstract class AppLocale {
-  AppLocale(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocale(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -91,7 +92,10 @@ abstract class AppLocale {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en'), Locale('ru')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('ru'),
+  ];
 
   /// No description provided for @search.
   ///
@@ -127,7 +131,8 @@ class _AppLocaleDelegate extends LocalizationsDelegate<AppLocale> {
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocaleDelegate old) => false;

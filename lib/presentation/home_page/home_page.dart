@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pmu_course/common/svg_objects.dart';
+import 'package:pmu_course/components/extensions/context_x.dart';
 import 'package:pmu_course/components/utils/debounce.dart';
 import 'package:pmu_course/domain/models/cardEmployee.dart';
 import 'package:pmu_course/presentation/details_page/details_page.dart';
@@ -146,6 +147,7 @@ class _BodyState extends State<_Body> {
               padding: const EdgeInsets.all(12),
               child: CupertinoSearchTextField(
                 controller: searchController,
+                placeholder: context.locale.search,
                 onChanged: (search) {
                   Debounce.run(
                     () => context.read<HomeBloc>().add(HomeLoadDataEvent(search: search)),
@@ -198,7 +200,7 @@ class _BodyState extends State<_Body> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Теперь $title у вас в ${isLiked ? 'любимых' : 'не любимых'}!',
+            '$title ${isLiked ? context.locale.liked : context.locale.disliked}!',
             style: Theme.of(context).textTheme.bodyLarge
                 ?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.bold),
           ),
