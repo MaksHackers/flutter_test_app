@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pmu_course/common/svg_objects.dart';
 import 'package:pmu_course/components/utils/debounce.dart';
 import 'package:pmu_course/domain/models/cardEmployee.dart';
 import 'package:pmu_course/presentation/details_page/details_page.dart';
@@ -98,6 +99,8 @@ class _BodyState extends State<_Body> {
 
   @override
   void initState() {
+    SvgObjects.init();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeBloc>().add(const HomeLoadDataEvent());
     });
