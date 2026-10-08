@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<LocaleBloc>(
       lazy: false,
-      create: (context) =>LocaleBloc(Locale(Platform.localeName)),
+      create: (context) => LocaleBloc(Locale(Platform.localeName.split(RegExp(r'[-_]')).first)),
       child: BlocBuilder<LocaleBloc, LocaleState>(
         builder: (context, state) {
           return MaterialApp(
@@ -80,8 +80,8 @@ class MyApp extends StatelessWidget {
               ),
             ),
           );
-        }
-      )
+        },
+      ),
     );
   }
 }

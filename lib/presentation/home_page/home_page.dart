@@ -169,15 +169,15 @@ class _BodyState extends State<_Body> {
                     child: Padding(
                       padding: const EdgeInsets.only(right: 12),
                       child: BlocBuilder<LocaleBloc, LocaleState>(
-                          builder: (context, state) {
-                            return state.currentLocale.languageCode == 'ru'
-                                ? const SvgRu()
-                                : const SvgUk();
-                          }
+                        builder: (context, state) {
+                          return state.currentLocale.languageCode == 'ru'
+                              ? const SvgRu()
+                              : const SvgUk();
+                        },
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
             BlocBuilder<HomeBloc, HomeState>(
@@ -225,7 +225,7 @@ class _BodyState extends State<_Body> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '$title ${isLiked ? context.locale.liked : context.locale.disliked}!',
+            '$title ${isLiked ? context.locale.liked : context.locale.disliked}',
             style: Theme.of(context).textTheme.bodyLarge
                 ?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.bold),
           ),

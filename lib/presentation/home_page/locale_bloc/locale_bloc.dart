@@ -11,8 +11,9 @@ class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
   }
 
   Future<void> _onChangeLocale(ChangeLocaleEvent event, Emitter<LocaleState> emit) async {
-    final toChange = AppLocale.supportedLocales
-        .firstWhere((e) => e.languageCode != state.currentLocale.languageCode);
+    final toChange = AppLocale.supportedLocales.firstWhere(
+      (e) => e.languageCode != state.currentLocale.languageCode,
+    );
     emit(state.copyWith(currentLocale: toChange));
   }
 }

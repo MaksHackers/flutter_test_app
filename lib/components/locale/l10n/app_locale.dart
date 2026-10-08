@@ -100,7 +100,7 @@ abstract class AppLocale {
   /// No description provided for @search.
   ///
   /// In ru, this message translates to:
-  /// **'Search'**
+  /// **'Поиск'**
   String get search;
 
   /// No description provided for @liked.

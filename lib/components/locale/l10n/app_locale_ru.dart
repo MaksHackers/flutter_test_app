@@ -10,7 +10,7 @@ class AppLocaleRu extends AppLocale {
   AppLocaleRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get search => 'Search';
+  String get search => 'Поиск';
 
   @override
   String get liked => 'в любимых!';
