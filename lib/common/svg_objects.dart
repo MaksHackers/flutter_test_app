@@ -4,10 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 abstract class SvgObjects {
   static void init() {
-    final pics = <String>{
-      R.ASSETS_SVG_RU_SVG,
-      R.ASSETS_SVG_UK_SVG
-    };
+    final pics = <String>{R.ASSETS_SVG_RU_SVG, R.ASSETS_SVG_UK_SVG};
 
     for (final String p in pics) {
       final loader = SvgAssetLoader(p);

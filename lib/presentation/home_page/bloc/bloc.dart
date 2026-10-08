@@ -22,18 +22,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final data = await repo.loadData(
       query: event.search,
       page: event.nextPage ?? 1,
-      onError: (e) => error = e
+      onError: (e) => error = e,
     );
 
     if (event.nextPage != null) {
       data?.data?.insertAll(0, state.data?.data ?? []);
     }
 
-    emit(state.copyWith(
-      isLoading: false,
-      isPaginationLoading: false,
-      data: data,
-      error: error
-    ));
+    emit(state.copyWith(isLoading: false, isPaginationLoading: false, data: data, error: error));
   }
 }

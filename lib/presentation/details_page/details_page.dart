@@ -16,9 +16,7 @@ class DetailsPage extends StatelessWidget {
         backgroundColor: colorScheme.inversePrimary,
         title: Text(
           'Подробнее',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -52,23 +50,23 @@ class DetailsPage extends StatelessWidget {
                     child: (data.imageUrl == null || data.imageUrl!.isEmpty)
                         ? _placeholder(colorScheme)
                         : Image.network(
-                      data.imageUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _placeholder(colorScheme),
-                      loadingBuilder: (context, child, progress) {
-                        if (progress == null) return child;
-                        return Container(
-                          color: colorScheme.primaryContainer,
-                          child: const Center(
-                            child: SizedBox(
-                              width: 32,
-                              height: 32,
-                              child: CircularProgressIndicator(strokeWidth: 3),
-                            ),
+                            data.imageUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _placeholder(colorScheme),
+                            loadingBuilder: (context, child, progress) {
+                              if (progress == null) return child;
+                              return Container(
+                                color: colorScheme.primaryContainer,
+                                child: const Center(
+                                  child: SizedBox(
+                                    width: 32,
+                                    height: 32,
+                                    child: CircularProgressIndicator(strokeWidth: 3),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
@@ -84,9 +82,7 @@ class DetailsPage extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
                     child: Text(
                       data.descriptionText,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: colorScheme.onPrimary,
-                      ),
+                      style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onPrimary),
                     ),
                   ),
                 ],
@@ -100,10 +96,6 @@ class DetailsPage extends StatelessWidget {
 
   Widget _placeholder(ColorScheme colorScheme) => Container(
     color: colorScheme.primaryContainer,
-    child: Icon(
-      Icons.person,
-      size: 120,
-      color: colorScheme.onPrimaryContainer,
-    ),
+    child: Icon(Icons.person, size: 120, color: colorScheme.onPrimaryContainer),
   );
 }

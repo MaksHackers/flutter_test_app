@@ -11,12 +11,7 @@ import 'package:pmu_course/presentation/home_page/bloc/state.dart';
 
 part 'card.dart';
 
-enum Position {
-  developer,
-  designer,
-  manager,
-  director
-}
+enum Position { developer, designer, manager, director }
 
 class EmployeeList<T> {
   final List<T> items;
@@ -39,17 +34,21 @@ class Employee {
     required this.lastName,
     required this.position,
     required this.salary,
-    this.imagePath
+    this.imagePath,
   });
 
   String getFullName() => '$firstName $lastName';
 
   String getPositionName() {
     switch (position) {
-      case Position.developer: return 'Разработчик';
-      case Position.designer: return 'Дизайнер';
-      case Position.director: return 'Директор';
-      case Position.manager: return 'Менеджер';
+      case Position.developer:
+        return 'Разработчик';
+      case Position.designer:
+        return 'Дизайнер';
+      case Position.director:
+        return 'Директор';
+      case Position.manager:
+        return 'Менеджер';
     }
   }
 
@@ -79,7 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Дмитриев Максим Александрович - ПИбд-31', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+        title: Text(
+          'Дмитриев Максим Александрович - ПИбд-31',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
       ),
       body: const _Body(),
     );
@@ -114,10 +116,9 @@ class _BodyState extends State<_Body> {
     if (scrollController.offset >= scrollController.position.maxScrollExtent) {
       final bloc = context.read<HomeBloc>();
       if (!bloc.state.isPaginationLoading && bloc.state.data?.nextPage != null) {
-        bloc.add(HomeLoadDataEvent(
-          search: searchController.text,
-          nextPage: bloc.state.data?.nextPage
-        ));
+        bloc.add(
+          HomeLoadDataEvent(search: searchController.text, nextPage: bloc.state.data?.nextPage),
+        );
       }
     }
   }
@@ -136,31 +137,31 @@ class _BodyState extends State<_Body> {
 
   @override
   Widget build(BuildContext context) {
-    return
-      Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child:
-        StatefulBuilder(
-          builder: (context, setState) => Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: CupertinoSearchTextField(
-                  controller: searchController,
-                  onChanged: (search) {
-                    Debounce.run(() => context.read<HomeBloc>().add(HomeLoadDataEvent(search: search)));
-                  },
-                ),
+    return Padding(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      child: StatefulBuilder(
+        builder: (context, setState) => Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: CupertinoSearchTextField(
+                controller: searchController,
+                onChanged: (search) {
+                  Debounce.run(
+                    () => context.read<HomeBloc>().add(HomeLoadDataEvent(search: search)),
+                  );
+                },
               ),
-              BlocBuilder<HomeBloc, HomeState>(
-                builder: (context, state) => state.error != null
+            ),
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) => state.error != null
                   ? Text(
                       state.error ?? '',
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.red),
                     )
                   : state.isLoading
-                    ? const CircularProgressIndicator()
-                    : Expanded(
+                  ? const CircularProgressIndicator()
+                  : Expanded(
                       child: RefreshIndicator(
                         onRefresh: _onRefresh,
                         child: ListView.builder(
@@ -170,41 +171,41 @@ class _BodyState extends State<_Body> {
                           itemBuilder: (context, index) {
                             final data = state.data?.data?[index];
                             return data != null
-                              ? _Card.fromData(
-                                data,
-                                ((title, isLiked) => _showSnackBar(context, title, isLiked)),
-                                () => _navToDetails(context, data)
-                              )
-                            : const SizedBox.shrink();
+                                ? _Card.fromData(
+                                    data,
+                                    ((title, isLiked) => _showSnackBar(context, title, isLiked)),
+                                    () => _navToDetails(context, data),
+                                  )
+                                : const SizedBox.shrink();
                           },
                         ),
-                      )
-                    )
-              )
-            ],
-          ),
+                      ),
+                    ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   void _navToDetails(BuildContext context, CardEmployeeData data) {
-      Navigator.push(context, CupertinoPageRoute(builder: (context) => DetailsPage(data)));
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => DetailsPage(data)));
   }
 
   void _showSnackBar(BuildContext context, String title, bool isLiked) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final colorScheme = Theme.of(context).colorScheme;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          'Теперь $title у вас в ${isLiked ? 'любимых' : 'не любимых'}!',
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: colorScheme.primary,
-            fontWeight: FontWeight.bold,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Теперь $title у вас в ${isLiked ? 'любимых' : 'не любимых'}!',
+            style: Theme.of(context).textTheme.bodyLarge
+                ?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.bold),
           ),
+          backgroundColor: colorScheme.primaryContainer,
+          duration: const Duration(seconds: 2),
         ),
-        backgroundColor: colorScheme.primaryContainer,
-        duration: const Duration(seconds: 2),
-      ));
+      );
     });
   }
 }

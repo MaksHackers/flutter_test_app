@@ -11,16 +11,16 @@ class HomeState extends Equatable {
     this.data,
     this.isLoading = false,
     this.isPaginationLoading = false,
-    this.error
+    this.error,
   });
 
   HomeState copyWith({HomeData? data, bool? isLoading, bool? isPaginationLoading, String? error}) =>
-    HomeState(
-      data: data ?? this.data,
-      isLoading: isLoading ?? this.isLoading,
-      isPaginationLoading: isPaginationLoading ?? this.isPaginationLoading,
-      error: error ?? this.error
-    );
+      HomeState(
+        data: data ?? this.data,
+        isLoading: isLoading ?? this.isLoading,
+        isPaginationLoading: isPaginationLoading ?? this.isPaginationLoading,
+        error: error ?? this.error,
+      );
 
   @override
   List<Object?> get props => [data, isLoading, isPaginationLoading, error];

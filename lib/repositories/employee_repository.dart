@@ -7,25 +7,23 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class EmployeeRepository extends ApiInterface {
   static final Dio _dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 3)))
-      ..interceptors.add(PrettyDioLogger(
-        requestHeader: true,
-        requestBody: true,
-      ));
+    ..interceptors.add(PrettyDioLogger(requestHeader: true, requestBody: true));
 
   static const String _baseUrl = 'http://10.8.1.17:8080';
 
   @override
-  Future<HomeData?> loadData({OnErrorCallBack? onError, String? query, int page = 1, int pageSize = 5}) async {
+  Future<HomeData?> loadData({
+    OnErrorCallBack? onError,
+    String? query,
+    int page = 1,
+    int pageSize = 5,
+  }) async {
     try {
       const String url = '$_baseUrl/api/characters';
 
       final Response<dynamic> response = await _dio.get<Map<dynamic, dynamic>>(
         url,
-        queryParameters: {
-          'filter[name_cont]': query,
-          'page[number]': page,
-          'page[size]': pageSize
-        }
+        queryParameters: {'filter[name_cont]': query, 'page[number]': page, 'page[size]': pageSize},
       );
 
       final CharactersDto dto = CharactersDto.fromJson(response.data as Map<String, dynamic>);

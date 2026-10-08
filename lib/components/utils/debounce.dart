@@ -10,10 +10,7 @@ class Debounce {
 
   static Timer? _timer;
 
-  static void run(
-      VoidCallback action, {
-      Duration delay = const Duration(milliseconds: 300),
-  }) {
+  static void run(VoidCallback action, {Duration delay = const Duration(milliseconds: 300)}) {
     _timer?.cancel();
     _timer = Timer(delay, action);
   }

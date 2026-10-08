@@ -13,3 +13,7 @@ format:
 res:
 	fgen --output lib/components/resources.g.dart --no-watch --no-preview; \
 	make format
+
+loc:
+	flutter gen-l10n
+	make format
