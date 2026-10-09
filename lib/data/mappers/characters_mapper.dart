@@ -7,6 +7,7 @@ extension CharacterDataDtoToModel on CharacterDataDto {
     text: attributes?.name ?? 'UNKNOWN',
     imageUrl: attributes?.image,
     descriptionText: '${attributes?.position} \n Зарплата: ${attributes?.salary}',
+    id: id,
   );
 }
 

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pmu_course/components/locale/l10n/app_locale.dart';
 import 'package:pmu_course/presentation/home_page/bloc/bloc.dart';
 import 'package:pmu_course/presentation/home_page/home_page.dart';
+import 'package:pmu_course/presentation/home_page/like_bloc/like_bloc.dart';
 import 'package:pmu_course/presentation/home_page/locale_bloc/locale_bloc.dart';
 import 'package:pmu_course/presentation/home_page/locale_bloc/locale_state.dart';
 import 'package:pmu_course/repositories/employee_repository.dart';
@@ -73,10 +74,14 @@ class MyApp extends StatelessWidget {
             home: RepositoryProvider<EmployeeRepository>(
               lazy: true,
               create: (_) => EmployeeRepository(),
-              child: BlocProvider<HomeBloc>(
+              child: BlocProvider<LikeBloc>(
                 lazy: false,
-                create: (context) => HomeBloc(context.read<EmployeeRepository>()),
-                child: const MyHomePage(title: 'Flutter Demo Home Page'),
+                create: (context) => LikeBloc(),
+                child: BlocProvider<HomeBloc>(
+                  lazy: false,
+                  create: (context) => HomeBloc(context.read<EmployeeRepository>()),
+                  child: const MyHomePage(title: 'Flutter Demo Home Page'),
+                ),
               ),
             ),
           );
