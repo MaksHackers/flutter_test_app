@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pmu_course/data/datasources/db.dart';
 import 'package:pmu_course/presentation/home_page/like_bloc/like_event.dart';
 import 'package:pmu_course/presentation/home_page/like_bloc/like_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,30 +7,45 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String _likedPrefsKey = 'liked';
 
 class LikeBloc extends Bloc<LikeEvent, LikeState> {
-  LikeBloc() : super(const LikeState(likedIds: [])) {
+  final Db _db;
+
+  LikeBloc({Db? db})
+      : _db = db ?? Db(),
+        super(const LikeState(likedIds: [])) {
     on<ChangeLikeEvent>(_onChangeLike);
     on<LoadLikesEvent>(_onLoadLikes);
   }
 
   Future<void> _onLoadLikes(LoadLikesEvent event, Emitter<LikeState> emit) async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getStringList(_likedPrefsKey);
-
-    emit(state.copyWith(likedIds: data));
+    try {
+      final ids = await _db.loadLikes();
+      emit(state.copyWith(likedIds: ids));
+    } catch (e, st) {
+      print('[LikeBloc] Ошибка загрузки лайков: $e\n$st');
+    }
   }
 
   Future<void> _onChangeLike(ChangeLikeEvent event, Emitter<LikeState> emit) async {
-    final updatedList = List<String>.from(state.likedIds ?? []);
+    try {
+      final isLiked = state.likedIds.contains(event.id);
 
-    if (updatedList.contains(event.id)) {
-      updatedList.remove(event.id);
-    } else {
-      updatedList.add(event.id);
+      if (isLiked) {
+        await _db.removeLike(event.id);
+        final updated = List<String>.from(state.likedIds)..remove(event.id);
+        emit(state.copyWith(likedIds: updated));
+      } else {
+        await _db.addLike(event.id);
+        final updated = List<String>.from(state.likedIds)..add(event.id);
+        emit(state.copyWith(likedIds: updated));
+      }
+    } catch (e, st) {
+      print('[LikeBloc] Ошибка изменения лайка: $e\n$st');
     }
+  }
 
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList(_likedPrefsKey, updatedList);
-
-    emit(state.copyWith(likedIds: updatedList));
+  @override
+  Future<void> close() async {
+    await _db.close();
+    return super.close();
   }
 }
